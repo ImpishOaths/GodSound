@@ -1,0 +1,87 @@
+[gd_scene load_steps=2 format=3 uid="uid://brw2rnv3gcadh"]
+
+[ext_resource type="Script" path="res://Scripts/BackgroundOptionWindow.cs" id="1_kb352"]
+
+[node name="BackgroundOptionWindow" type="Window"]
+title = "Background Options"
+initial_position = 2
+size = Vector2i(390, 146)
+wrap_controls = true
+transient = true
+exclusive = true
+script = ExtResource("1_kb352")
+
+[node name="Margin" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+alignment = 1
+
+[node name="Style" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="Margin/VBox/Style"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Background style"
+
+[node name="BackgroundStyle" type="OptionButton" parent="Margin/VBox/Style"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 3
+selected = 0
+popup/item_0/text = "Rainbow"
+popup/item_0/id = 0
+popup/item_1/text = "Flat"
+popup/item_1/id = 1
+popup/item_2/text = "Clear"
+popup/item_2/id = 2
+
+[node name="Color" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="Margin/VBox/Color"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Flat Background Color"
+
+[node name="FlatColor" type="ColorPickerButton" parent="Margin/VBox/Color"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HideUI" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="Margin/VBox/HideUI"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Hide UI on unfocus"
+
+[node name="HideUI" type="CheckBox" parent="Margin/VBox/HideUI"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Close" type="Button" parent="Margin/VBox"]
+layout_mode = 2
+text = "Close"
+
+[connection signal="close_requested" from="." to="." method="CloseButton"]
+[connection signal="item_selected" from="Margin/VBox/Style/BackgroundStyle" to="." method="ChangeBackground"]
+[connection signal="color_changed" from="Margin/VBox/Color/FlatColor" to="." method="ChangeFlatColor"]
+[connection signal="toggled" from="Margin/VBox/HideUI/HideUI" to="." method="ChangeHideUI"]
+[connection signal="pressed" from="Margin/VBox/Close" to="." method="CloseButton"]

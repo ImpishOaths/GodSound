@@ -1,0 +1,79 @@
+[gd_scene load_steps=3 format=3 uid="uid://buanl7rmqe63m"]
+
+[ext_resource type="Script" path="res://Scripts/PlaylistButton.cs" id="1_c14gk"]
+[ext_resource type="PackedScene" uid="uid://cng6k33kwvenn" path="res://Scenes/ScrollingText.tscn" id="1_fdd1i"]
+
+[node name="PlaylistButton" type="Button"]
+custom_minimum_size = Vector2(0, 50)
+offset_right = 669.0
+offset_bottom = 32.0
+size_flags_horizontal = 3
+focus_mode = 0
+script = ExtResource("1_c14gk")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 7
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 7
+
+[node name="BoxContainer" type="BoxContainer" parent="MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="SongCount" type="Label" parent="MarginContainer/BoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(41, 0)
+layout_mode = 2
+text = "999"
+vertical_alignment = 1
+clip_text = true
+
+[node name="Spacer3" type="Control" parent="MarginContainer/BoxContainer"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="PlaylistName" parent="MarginContainer/BoxContainer" instance=ExtResource("1_fdd1i")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+text = "Dragonforce best of list"
+
+[node name="Spacer" type="Control" parent="MarginContainer/BoxContainer"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="AddSong" type="Button" parent="MarginContainer/BoxContainer"]
+layout_mode = 2
+focus_mode = 0
+text = "+Song"
+
+[node name="RemoveSong" type="Button" parent="MarginContainer/BoxContainer"]
+layout_mode = 2
+focus_mode = 0
+text = "-Song"
+
+[node name="AddAlbum" type="Button" parent="MarginContainer/BoxContainer"]
+layout_mode = 2
+focus_mode = 0
+text = "+Album"
+
+[node name="RemoveAlbum" type="Button" parent="MarginContainer/BoxContainer"]
+layout_mode = 2
+focus_mode = 0
+text = "-Album"
+
+[connection signal="pressed" from="MarginContainer/BoxContainer/AddSong" to="." method="AddSongPressed"]
+[connection signal="pressed" from="MarginContainer/BoxContainer/RemoveSong" to="." method="RemoveSongPressed"]
+[connection signal="pressed" from="MarginContainer/BoxContainer/AddAlbum" to="." method="AddAlbumPressed"]
+[connection signal="pressed" from="MarginContainer/BoxContainer/RemoveAlbum" to="." method="RemoveAlbumPressed"]

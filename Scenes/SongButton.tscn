@@ -1,0 +1,74 @@
+[gd_scene load_steps=3 format=3 uid="uid://653c7x3gw1pc"]
+
+[ext_resource type="Script" path="res://Scripts/SongButton.cs" id="1_b5sx2"]
+[ext_resource type="PackedScene" uid="uid://cng6k33kwvenn" path="res://Scenes/ScrollingText.tscn" id="1_jebhw"]
+
+[node name="SongButton" type="Button"]
+custom_minimum_size = Vector2(0, 50)
+offset_right = 669.0
+offset_bottom = 32.0
+size_flags_horizontal = 3
+focus_mode = 0
+script = ExtResource("1_b5sx2")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 8
+
+[node name="BoxContainer" type="BoxContainer" parent="MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="SongNumber" type="Label" parent="MarginContainer/BoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(41, 0)
+layout_mode = 2
+text = "999"
+vertical_alignment = 1
+clip_text = true
+
+[node name="Spacer" type="Control" parent="MarginContainer/BoxContainer"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="SongName" parent="MarginContainer/BoxContainer" instance=ExtResource("1_jebhw")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.05
+mouse_filter = 2
+
+[node name="Spacer2" type="Control" parent="MarginContainer/BoxContainer"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="SongArtist" parent="MarginContainer/BoxContainer" instance=ExtResource("1_jebhw")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+text = "John Music"
+leftAlign = false
+
+[node name="Spacer3" type="Control" parent="MarginContainer/BoxContainer"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="SongLength" type="Label" parent="MarginContainer/BoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(61, 0)
+layout_mode = 2
+text = "99:99"
+horizontal_alignment = 2
+clip_text = true

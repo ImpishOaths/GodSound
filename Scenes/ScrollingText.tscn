@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3 uid="uid://cng6k33kwvenn"]
+
+[ext_resource type="Script" path="res://Scripts/ScrollingText.cs" id="1_rwd4m"]
+
+[node name="ScrollingText" type="Control"]
+clip_children = 1
+clip_contents = true
+custom_minimum_size = Vector2(0, 23)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 167.0
+offset_bottom = 23.0
+script = ExtResource("1_rwd4m")
+scrollSpeed = 30.0
+scrollThreshhold = 5.0
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -11.5
+offset_right = 164.0
+offset_bottom = 14.5
+grow_vertical = 2
+vertical_alignment = 1
+
+[connection signal="resized" from="." to="." method="OnResized"]

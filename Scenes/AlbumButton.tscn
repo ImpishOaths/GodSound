@@ -1,0 +1,38 @@
+[gd_scene load_steps=4 format=3 uid="uid://bsr1jt1kglctp"]
+
+[ext_resource type="Script" path="res://Scripts/AlbumButton.cs" id="1_pq0q0"]
+
+[sub_resource type="Gradient" id="Gradient_g1hs0"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_tx3q3"]
+gradient = SubResource("Gradient_g1hs0")
+fill = 1
+fill_from = Vector2(0.47, 0.47)
+
+[node name="AlbumButton" type="MarginContainer"]
+offset_right = 221.0
+offset_bottom = 221.0
+size_flags_horizontal = 3
+script = ExtResource("1_pq0q0")
+
+[node name="SelectAlbumButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"ButtonClear"
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="AlbumCover" type="TextureRect" parent="Margin"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_tx3q3")
+expand_mode = 4
+stretch_mode = 6

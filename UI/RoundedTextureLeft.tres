@@ -1,0 +1,7 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://fw7ojim66e12"]
+
+[ext_resource type="Shader" path="res://UI/RoundedTexture.gdshader" id="1_yyayw"]
+
+[resource]
+shader = ExtResource("1_yyayw")
+shader_parameter/left = true

@@ -1,0 +1,515 @@
+[gd_scene load_steps=23 format=3 uid="uid://baxag34uh3hvc"]
+
+[ext_resource type="Script" path="res://Scripts/Main.cs" id="1_lekkf"]
+[ext_resource type="Material" uid="uid://comthkdvcgu84" path="res://Background/Back.tres" id="2_7wpbd"]
+[ext_resource type="Script" path="res://Scripts/AspectControl.cs" id="4_1ajvd"]
+[ext_resource type="Script" path="res://Scripts/AwakeControl.cs" id="4_60ajo"]
+[ext_resource type="PackedScene" uid="uid://cng6k33kwvenn" path="res://Scenes/ScrollingText.tscn" id="5_gh37n"]
+[ext_resource type="Texture2D" uid="uid://d3i3w5rm5iugq" path="res://Icons/Control Icons/PauseIcon.png" id="5_h0qsu"]
+[ext_resource type="PackedScene" uid="uid://653c7x3gw1pc" path="res://Scenes/SongButton.tscn" id="7_7rhl2"]
+[ext_resource type="Texture2D" uid="uid://ns3birboomk8" path="res://Icons/Control Icons/PlayIcon.png" id="7_fm5yq"]
+[ext_resource type="Texture2D" uid="uid://bl3b4dd2wggmx" path="res://Icons/Control Icons/LoopIcon.png" id="7_iw7lk"]
+[ext_resource type="Texture2D" uid="uid://m0lit6kg4ncm" path="res://Icons/Control Icons/LoopOneIcon.png" id="8_epx4s"]
+[ext_resource type="Script" path="res://Scripts/ScrollbarSpacer.cs" id="8_hcmg4"]
+[ext_resource type="PackedScene" uid="uid://cn7tbtfias7p5" path="res://Scenes/CustomSlider.tscn" id="8_kuu8f"]
+[ext_resource type="PackedScene" uid="uid://buanl7rmqe63m" path="res://Scenes/PlaylistButton.tscn" id="9_7767v"]
+[ext_resource type="PackedScene" uid="uid://bsr1jt1kglctp" path="res://Scenes/AlbumButton.tscn" id="10_70nue"]
+[ext_resource type="Texture2D" uid="uid://d3w2f8mapeclr" path="res://Icons/Control Icons/NextIcon.png" id="13_lkb0r"]
+[ext_resource type="PackedScene" uid="uid://co8huorpl6ey1" path="res://Scenes/AddFolderWindow.tscn" id="15_fmtrf"]
+[ext_resource type="PackedScene" uid="uid://cldlxder467b6" path="res://Scenes/AddPlaylistWindow.tscn" id="16_eblsy"]
+[ext_resource type="PackedScene" uid="uid://brw2rnv3gcadh" path="res://Scenes/BackgroundOptionWindow.tscn" id="18_b8yrg"]
+
+[sub_resource type="Animation" id="Animation_1ugn0"]
+resource_name = "FadeIn"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AwakeControl:mouse_filter")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.2),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [2]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Margins:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_s5nnr"]
+resource_name = "FadeOut"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AwakeControl:mouse_filter")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Margins:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 0.5),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_sqy71"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AwakeControl:mouse_filter")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [2]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Margins:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_neiuf"]
+_data = {
+"FadeIn": SubResource("Animation_1ugn0"),
+"FadeOut": SubResource("Animation_s5nnr"),
+"RESET": SubResource("Animation_sqy71")
+}
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lekkf")
+AlbumButtonScene = ExtResource("10_70nue")
+PlaylistButtonScene = ExtResource("9_7767v")
+SongButtonScene = ExtResource("7_7rhl2")
+PauseButtonIcon = ExtResource("5_h0qsu")
+PlayButtonIcon = ExtResource("7_fm5yq")
+LoopButtonIcon = ExtResource("7_iw7lk")
+LoopOnceButtonIcon = ExtResource("8_epx4s")
+
+[node name="FlatBackground" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.298039, 0.501961, 1)
+
+[node name="RainbowBackground" type="ColorRect" parent="."]
+unique_name_in_owner = true
+material = ExtResource("2_7wpbd")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="FadeAnimator" type="AnimationPlayer" parent="."]
+unique_name_in_owner = true
+libraries = {
+"": SubResource("AnimationLibrary_neiuf")
+}
+
+[node name="Margins" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+script = ExtResource("4_1ajvd")
+resolution = Vector2(1280, 720)
+
+[node name="HSplit" type="BoxContainer" parent="Margins"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Player" type="BoxContainer" parent="Margins/HSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="Settings" type="BoxContainer" parent="Margins/HSplit/Player"]
+layout_mode = 2
+
+[node name="AddFolder" type="Button" parent="Margins/HSplit/Player/Settings"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+text = "Add Folder"
+clip_text = true
+
+[node name="AddPlaylist" type="Button" parent="Margins/HSplit/Player/Settings"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+text = "New Playlist"
+clip_text = true
+
+[node name="RemoveAlbum" type="Button" parent="Margins/HSplit/Player/Settings"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.2
+focus_mode = 0
+text = "Remove Album"
+clip_text = true
+
+[node name="Background" type="Button" parent="Margins/HSplit/Player/Settings"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+text = "Background"
+clip_text = true
+
+[node name="PlayControl" type="PanelContainer" parent="Margins/HSplit/Player"]
+layout_mode = 2
+
+[node name="VSplit" type="BoxContainer" parent="Margins/HSplit/Player/PlayControl"]
+layout_mode = 2
+vertical = true
+
+[node name="Spacer" type="Control" parent="Margins/HSplit/Player/PlayControl/VSplit"]
+layout_mode = 2
+
+[node name="Controls" type="BoxContainer" parent="Margins/HSplit/Player/PlayControl/VSplit"]
+layout_mode = 2
+
+[node name="spacer" type="Control" parent="Margins/HSplit/Player/PlayControl/VSplit/Controls"]
+layout_mode = 2
+
+[node name="NameLabel" parent="Margins/HSplit/Player/PlayControl/VSplit/Controls" instance=ExtResource("5_gh37n")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="spacer2" type="Control" parent="Margins/HSplit/Player/PlayControl/VSplit/Controls"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="VolumeSlider" parent="Margins/HSplit/Player/PlayControl/VSplit/Controls" instance=ExtResource("8_kuu8f")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.3
+value = 1.0
+
+[node name="PlayButton" type="Button" parent="Margins/HSplit/Player/PlayControl/VSplit/Controls"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.2
+focus_mode = 0
+icon = ExtResource("7_fm5yq")
+icon_alignment = 1
+expand_icon = true
+
+[node name="NextButton" type="Button" parent="Margins/HSplit/Player/PlayControl/VSplit/Controls"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.2
+focus_mode = 0
+icon = ExtResource("13_lkb0r")
+icon_alignment = 1
+expand_icon = true
+
+[node name="PlaybackTypeOptions" type="OptionButton" parent="Margins/HSplit/Player/PlayControl/VSplit/Controls"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.3
+focus_mode = 0
+alignment = 1
+item_count = 4
+selected = 0
+popup/item_0/text = "Stop"
+popup/item_0/id = 0
+popup/item_1/text = "Loop"
+popup/item_1/id = 1
+popup/item_2/text = "Loop 1"
+popup/item_2/id = 2
+popup/item_3/text = "Shuffle"
+popup/item_3/id = 3
+
+[node name="PlaybackSpeedOptions" type="OptionButton" parent="Margins/HSplit/Player/PlayControl/VSplit/Controls"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.3
+focus_mode = 0
+alignment = 1
+item_count = 6
+selected = 1
+popup/item_0/text = "x0.5"
+popup/item_0/id = 0
+popup/item_1/text = "x1.0"
+popup/item_1/id = 1
+popup/item_2/text = "x1.5"
+popup/item_2/id = 2
+popup/item_3/text = "x2.0"
+popup/item_3/id = 3
+popup/item_4/text = "x2.5"
+popup/item_4/id = 4
+popup/item_5/text = "x3.0"
+popup/item_5/id = 5
+
+[node name="spacer3" type="Control" parent="Margins/HSplit/Player/PlayControl/VSplit/Controls"]
+layout_mode = 2
+
+[node name="VSplit" type="HSeparator" parent="Margins/HSplit/Player/PlayControl/VSplit"]
+layout_mode = 2
+
+[node name="SeekBar" type="BoxContainer" parent="Margins/HSplit/Player/PlayControl/VSplit"]
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="Margins/HSplit/Player/PlayControl/VSplit/SeekBar"]
+layout_mode = 2
+
+[node name="CurrentTime" type="Label" parent="Margins/HSplit/Player/PlayControl/VSplit/SeekBar"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "00:00"
+
+[node name="TimeSlider" parent="Margins/HSplit/Player/PlayControl/VSplit/SeekBar" instance=ExtResource("8_kuu8f")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+value = 0.0
+
+[node name="TotalTime" type="Label" parent="Margins/HSplit/Player/PlayControl/VSplit/SeekBar"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "00:00"
+
+[node name="Spacer2" type="Control" parent="Margins/HSplit/Player/PlayControl/VSplit/SeekBar"]
+layout_mode = 2
+
+[node name="Songs" type="PanelContainer" parent="Margins/HSplit/Player"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="Margins/HSplit/Player/Songs"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+
+[node name="VSplit" type="BoxContainer" parent="Margins/HSplit/Player/Songs/MarginContainer"]
+layout_mode = 2
+vertical = true
+
+[node name="HSplit" type="BoxContainer" parent="Margins/HSplit/Player/Songs/MarginContainer/VSplit"]
+layout_mode = 2
+
+[node name="PlayAlbumButton" type="Button" parent="Margins/HSplit/Player/Songs/MarginContainer/VSplit/HSplit"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.2
+focus_mode = 0
+icon = ExtResource("7_fm5yq")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Spacer" type="Control" parent="Margins/HSplit/Player/Songs/MarginContainer/VSplit/HSplit"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_stretch_ratio = 0.1
+
+[node name="AlbumName" parent="Margins/HSplit/Player/Songs/MarginContainer/VSplit/HSplit" instance=ExtResource("5_gh37n")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Spacer2" type="Control" parent="Margins/HSplit/Player/Songs/MarginContainer/VSplit/HSplit"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_stretch_ratio = 0.1
+
+[node name="ArtistName" parent="Margins/HSplit/Player/Songs/MarginContainer/VSplit/HSplit" instance=ExtResource("5_gh37n")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+leftAlign = false
+
+[node name="SetBookmark" type="Button" parent="Margins/HSplit/Player/Songs/MarginContainer/VSplit/HSplit"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+text = "Set Bookmark"
+
+[node name="BookmarkLabel" parent="Margins/HSplit/Player/Songs/MarginContainer/VSplit/HSplit" instance=ExtResource("5_gh37n")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+
+[node name="Songs" type="ScrollContainer" parent="Margins/HSplit/Player/Songs/MarginContainer/VSplit"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="HSplit" type="BoxContainer" parent="Margins/HSplit/Player/Songs/MarginContainer/VSplit/Songs"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SongList" type="BoxContainer" parent="Margins/HSplit/Player/Songs/MarginContainer/VSplit/Songs/HSplit"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="Spacer" type="Control" parent="Margins/HSplit/Player/Songs/MarginContainer/VSplit/Songs/HSplit" node_paths=PackedStringArray("scrollContainer")]
+layout_mode = 2
+script = ExtResource("8_hcmg4")
+scrollContainer = NodePath("../..")
+
+[node name="Playlists" type="PanelContainer" parent="Margins/HSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="Margins/HSplit/Playlists"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Margins/HSplit/Playlists/MarginContainer"]
+layout_mode = 2
+
+[node name="HSplit" type="BoxContainer" parent="Margins/HSplit/Playlists/MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VSplit" type="BoxContainer" parent="Margins/HSplit/Playlists/MarginContainer/ScrollContainer/HSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="PlaylistsLabel" type="Label" parent="Margins/HSplit/Playlists/MarginContainer/ScrollContainer/HSplit/VSplit"]
+layout_mode = 2
+text = "Playlists"
+
+[node name="PlaylistContainer" type="BoxContainer" parent="Margins/HSplit/Playlists/MarginContainer/ScrollContainer/HSplit/VSplit"]
+unique_name_in_owner = true
+layout_mode = 2
+vertical = true
+
+[node name="HSeperator" type="HSeparator" parent="Margins/HSplit/Playlists/MarginContainer/ScrollContainer/HSplit/VSplit"]
+layout_mode = 2
+
+[node name="AlbumsLabel" type="Label" parent="Margins/HSplit/Playlists/MarginContainer/ScrollContainer/HSplit/VSplit"]
+layout_mode = 2
+text = "Albums"
+
+[node name="AlbumGrid" type="GridContainer" parent="Margins/HSplit/Playlists/MarginContainer/ScrollContainer/HSplit/VSplit"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 4
+columns = 5
+
+[node name="HSeperator2" type="HSeparator" parent="Margins/HSplit/Playlists/MarginContainer/ScrollContainer/HSplit/VSplit"]
+layout_mode = 2
+
+[node name="Audiobooks" type="Label" parent="Margins/HSplit/Playlists/MarginContainer/ScrollContainer/HSplit/VSplit"]
+layout_mode = 2
+text = "Audiobooks"
+
+[node name="AudiobookGrid" type="GridContainer" parent="Margins/HSplit/Playlists/MarginContainer/ScrollContainer/HSplit/VSplit"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 4
+columns = 5
+
+[node name="Spacer" type="Control" parent="Margins/HSplit/Playlists/MarginContainer/ScrollContainer/HSplit" node_paths=PackedStringArray("scrollContainer")]
+layout_mode = 2
+script = ExtResource("8_hcmg4")
+scrollContainer = NodePath("../..")
+
+[node name="AwakeControl" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0)
+script = ExtResource("4_60ajo")
+
+[node name="AddFolderWindow" parent="." instance=ExtResource("15_fmtrf")]
+visible = false
+
+[node name="AddPlaylistWindow" parent="." instance=ExtResource("16_eblsy")]
+visible = false
+
+[node name="BackgroundOptionWindow" parent="." instance=ExtResource("18_b8yrg")]
+visible = false
+
+[connection signal="pressed" from="Margins/HSplit/Player/Settings/AddFolder" to="AddFolderWindow" method="show"]
+[connection signal="pressed" from="Margins/HSplit/Player/Settings/AddPlaylist" to="AddPlaylistWindow" method="show"]
+[connection signal="pressed" from="Margins/HSplit/Player/Settings/RemoveAlbum" to="." method="RemoveAlbum"]
+[connection signal="pressed" from="Margins/HSplit/Player/Settings/Background" to="BackgroundOptionWindow" method="show"]
+[connection signal="ValueChanged" from="Margins/HSplit/Player/PlayControl/VSplit/Controls/VolumeSlider" to="." method="SetVolume"]
+[connection signal="pressed" from="Margins/HSplit/Player/PlayControl/VSplit/Controls/PlayButton" to="." method="TogglePlay"]
+[connection signal="pressed" from="Margins/HSplit/Player/PlayControl/VSplit/Controls/NextButton" to="." method="NextChapter"]
+[connection signal="pressed" from="Margins/HSplit/Player/PlayControl/VSplit/Controls/NextButton" to="." method="NextSong" binds= [true]]
+[connection signal="item_selected" from="Margins/HSplit/Player/PlayControl/VSplit/Controls/PlaybackTypeOptions" to="." method="SetPlaybackMode"]
+[connection signal="item_selected" from="Margins/HSplit/Player/PlayControl/VSplit/Controls/PlaybackSpeedOptions" to="." method="SetSpeedPlayback"]
+[connection signal="button_down" from="Margins/HSplit/Player/PlayControl/VSplit/SeekBar/TimeSlider" to="." method="StartSeeking"]
+[connection signal="button_up" from="Margins/HSplit/Player/PlayControl/VSplit/SeekBar/TimeSlider" to="." method="SeekTime"]
+[connection signal="pressed" from="Margins/HSplit/Player/Songs/MarginContainer/VSplit/HSplit/PlayAlbumButton" to="." method="PlayAlbum"]
+[connection signal="pressed" from="Margins/HSplit/Player/Songs/MarginContainer/VSplit/HSplit/SetBookmark" to="." method="ResetBookmark"]

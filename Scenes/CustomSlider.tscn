@@ -1,0 +1,127 @@
+[gd_scene load_steps=7 format=3 uid="uid://cn7tbtfias7p5"]
+
+[ext_resource type="Texture2D" uid="uid://b20xsfxpmmbab" path="res://Icons/grabber.png" id="1_njeh1"]
+[ext_resource type="Script" path="res://Scripts/CustomSlider.cs" id="1_w36we"]
+[ext_resource type="Shader" path="res://UI/RoundedTexture.gdshader" id="2_55qtw"]
+[ext_resource type="Material" uid="uid://fw7ojim66e12" path="res://UI/RoundedTextureLeft.tres" id="2_vpgs7"]
+[ext_resource type="Material" uid="uid://dt0xa57k2vlrj" path="res://UI/RoundedTextureRight.tres" id="4_xk1tr"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vwgdx"]
+shader = ExtResource("2_55qtw")
+shader_parameter/left = true
+
+[node name="Slider" type="TextureButton"]
+custom_minimum_size = Vector2(0, 40)
+offset_right = 178.0
+offset_bottom = 40.0
+focus_mode = 0
+script = ExtResource("1_w36we")
+
+[node name="DarkBackground" type="BoxContainer" parent="."]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="LeftCap" type="Control" parent="DarkBackground"]
+material = SubResource("ShaderMaterial_vwgdx")
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+size_flags_stretch_ratio = 0.0
+mouse_filter = 2
+
+[node name="DarkFill" type="ColorRect" parent="DarkBackground"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+size_flags_stretch_ratio = 0.5
+mouse_filter = 2
+color = Color(0.0807292, 0.0807292, 0.0807292, 1)
+
+[node name="RightCap" type="ColorRect" parent="DarkBackground"]
+material = ExtResource("4_xk1tr")
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+size_flags_stretch_ratio = 0.0
+mouse_filter = 2
+color = Color(0.0807292, 0.0807292, 0.0807292, 1)
+
+[node name="WhiteFill" type="BoxContainer" parent="."]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="LeftEndcap" type="ColorRect" parent="WhiteFill"]
+material = ExtResource("2_vpgs7")
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+size_flags_stretch_ratio = 0.0
+mouse_filter = 2
+color = Color(0.584314, 0.584314, 0.584314, 1)
+
+[node name="LeftFill" type="ColorRect" parent="WhiteFill"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+size_flags_stretch_ratio = 0.5
+mouse_filter = 2
+color = Color(0.584314, 0.584314, 0.584314, 1)
+
+[node name="GrabberContainer" type="Control" parent="WhiteFill"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Grabber" type="TextureRect" parent="WhiteFill/GrabberContainer"]
+z_index = 1
+custom_minimum_size = Vector2(20, 30)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -10.0
+offset_top = -15.0
+offset_right = 10.0
+offset_bottom = 15.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("1_njeh1")
+expand_mode = 1
+
+[node name="RightFill" type="Control" parent="WhiteFill"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+mouse_filter = 2
+
+[node name="RightEndcap" type="Control" parent="WhiteFill"]
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+size_flags_stretch_ratio = 0.0
+mouse_filter = 2
+
+[connection signal="button_down" from="." to="." method="GrabberDown"]
+[connection signal="button_up" from="." to="." method="GrabberUp"]

@@ -1,0 +1,77 @@
+[gd_scene load_steps=2 format=3 uid="uid://co8huorpl6ey1"]
+
+[ext_resource type="Script" path="res://Scripts/AddFolderWindow.cs" id="1_ulc4v"]
+
+[node name="AddFolderWindow" type="Window"]
+title = "Add Folder"
+initial_position = 2
+size = Vector2i(390, 166)
+wrap_controls = true
+transient = true
+exclusive = true
+script = ExtResource("1_ulc4v")
+
+[node name="Margin" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 15
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+
+[node name="HBox1" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+
+[node name="Path" type="LineEdit" parent="Margin/VBox/HBox1"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Folder Path"
+
+[node name="ChangePath" type="Button" parent="Margin/VBox/HBox1"]
+layout_mode = 2
+text = "Change"
+
+[node name="OpenRecursive" type="CheckBox" parent="Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Open Recursive"
+
+[node name="Audiobook" type="CheckBox" parent="Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Audiobook"
+
+[node name="HBox2" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+
+[node name="Okay" type="Button" parent="Margin/VBox/HBox2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Okay"
+
+[node name="Cancel" type="Button" parent="Margin/VBox/HBox2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Cancel"
+
+[node name="ChooseFolder" type="FileDialog" parent="."]
+title = "Open a Directory"
+initial_position = 2
+size = Vector2i(687, 466)
+ok_button_text = "Select Current Folder"
+file_mode = 2
+access = 2
+
+[connection signal="close_requested" from="." to="." method="CancelButton"]
+[connection signal="pressed" from="Margin/VBox/HBox1/ChangePath" to="ChooseFolder" method="show"]
+[connection signal="pressed" from="Margin/VBox/HBox2/Okay" to="." method="OkayButton"]
+[connection signal="pressed" from="Margin/VBox/HBox2/Cancel" to="." method="CancelButton"]
+[connection signal="dir_selected" from="ChooseFolder" to="." method="PathSet"]

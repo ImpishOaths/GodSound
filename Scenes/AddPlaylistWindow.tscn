@@ -1,0 +1,49 @@
+[gd_scene load_steps=2 format=3 uid="uid://cldlxder467b6"]
+
+[ext_resource type="Script" path="res://Scripts/AddPlaylistWindow.cs" id="1_6n5m2"]
+
+[node name="AddPlaylistWindow" type="Window"]
+initial_position = 2
+title = "Add Playlist"
+size = Vector2i(420, 100)
+wrap_controls = true
+transient = true
+exclusive = true
+script = ExtResource("1_6n5m2")
+
+[node name="Margin" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 15
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+
+[node name="PlaylistName" type="LineEdit" parent="Margin/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+placeholder_text = "Playlist Name"
+
+[node name="HBox" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+
+[node name="Okay" type="Button" parent="Margin/VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Okay"
+
+[node name="Cancel" type="Button" parent="Margin/VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Cancel"
+
+[connection signal="close_requested" from="." to="." method="CancelButton"]
+[connection signal="pressed" from="Margin/VBox/HBox/Okay" to="." method="OkayButton"]
+[connection signal="pressed" from="Margin/VBox/HBox/Cancel" to="." method="CancelButton"]
