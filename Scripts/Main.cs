@@ -7,7 +7,8 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.Linq;
 using System;
-
+using SharpHook;
+using SharpHook.Native;
 
 public partial class Main : Control
 {
@@ -79,7 +80,11 @@ public partial class Main : Control
 
 	private JsonSerializerSettings SerializerSettings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects };
 
-	public override void _Ready()
+	private SimpleGlobalHook hook;
+	private bool scheduleTogglePlay = false;
+	private bool scheduleNext = false;
+
+	public override async void _Ready()
 	{
 		PlaylistContainer = GetNode<Control>("%PlaylistContainer");
 		AlbumGrid = GetNode<Control>("%AlbumGrid");
@@ -117,10 +122,20 @@ public partial class Main : Control
 		PickDefaultPlaylist();
 		RefreshLibrary();
 		ReflectSettings();
+
+		hook = new SimpleGlobalHook();
+		hook.KeyPressed += (sender, e) => {
+			if(e.Data.KeyCode ==  KeyCode.VcMediaPlay)
+				scheduleTogglePlay = true;
+			if(e.Data.KeyCode ==  KeyCode.VcMediaNext)
+				scheduleNext = true;
+		};
+		await hook.RunAsync();
 	}
 
     public override void _ExitTree()
 	{
+		hook.Dispose();
 		SaveLibrary();
 		SaveSettings();
 		if(PlayingPlaylist != null && PlayingPlaylist.GetPlaylistType() == Playlist.Type.AUDIOBOOK && ActiveBookmark != null)
@@ -660,12 +675,14 @@ public partial class Main : Control
 
 	public override void _Process(double delta)
 	{
-		if(Input.IsActionJustPressed("PAUSE"))
+		if(scheduleTogglePlay)
 		{
+			scheduleTogglePlay = false;
 			TogglePlay();
 		}
-		if(Input.IsActionJustPressed("NEXT"))
+		if(scheduleNext)
 		{
+			scheduleNext = false;
 			NextSong(true);
 		}
 		if(Playing)
