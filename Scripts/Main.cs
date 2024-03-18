@@ -112,10 +112,10 @@ public partial class Main : Control
 		instance = this;
 		if(LoadLibrary() == false)
 			SaveLibrary();
-		PickDefaultPlaylist();
-		RefreshLibrary();
 		if(LoadSettings() == false)
 			SaveSettings();
+		PickDefaultPlaylist();
+		RefreshLibrary();
 		ReflectSettings();
 	}
 
@@ -162,6 +162,8 @@ public partial class Main : Control
 	public void SetPlaybackMode(int mode)
 	{
 		CurrentMode = (PlaybackMode)mode;
+		ProgramSettings.playbackMode = CurrentMode;
+		PlaybackType.Selected = mode;
 		if(CurrentMode != PlaybackMode.SHUFFLE)
 			ShuffleList = new Queue<int>();
 	}
@@ -322,6 +324,8 @@ public partial class Main : Control
 		WavePlayer.Init(SampleQueue);
 		SelectSong(playlist, index);
 		TogglePlay();
+		ProgramSettings.playlist = playlist.playlistName;
+		ProgramSettings.song = index;
 	}
 
 	public void PlayAudiobook(Playlist playlist, int index, float seekRatio)
@@ -581,6 +585,7 @@ public partial class Main : Control
 		}
 		AwakeControl.AlwaysAwake = !ProgramSettings.hideUI;
 		FlatBackground.Color = ProgramSettings.flatColor;
+		SetPlaybackMode((int)ProgramSettings.playbackMode);
 	}
 
 	public void RefreshLibrary()
@@ -612,6 +617,13 @@ public partial class Main : Control
 
 	public void PickDefaultPlaylist()
 	{
+		if(ProgramSettings.playlist != "" && ProgramSettings.song != -1 && Library.TryGetValue(ProgramSettings.playlist, out Playlist defaultPlaylist) && defaultPlaylist.songs.Count > 0)
+		{
+			SetPlaylist(defaultPlaylist);
+			PlaySong(defaultPlaylist, ProgramSettings.song);
+			TogglePlay();
+			return;
+		}
 		foreach(var playlist in Library)
 		{
 			SetPlaylist(playlist.Value);
@@ -648,6 +660,14 @@ public partial class Main : Control
 
 	public override void _Process(double delta)
 	{
+		if(Input.IsActionJustPressed("PAUSE"))
+		{
+			TogglePlay();
+		}
+		if(Input.IsActionJustPressed("NEXT"))
+		{
+			NextSong(true);
+		}
 		if(Playing)
 		{
 			UpdateTimeTracker();
@@ -741,6 +761,9 @@ public class Settings
 	public BackgroundStyle backgroundStyle = BackgroundStyle.RAINBOW;
 	public Color flatColor = Colors.DarkSlateGray;
 	public bool hideUI = true;
+	public string playlist = "";
+	public int song = -1;
+	public Main.PlaybackMode playbackMode = Main.PlaybackMode.STOP;
 }
 
 public class Library
