@@ -255,7 +255,8 @@ public partial class Main : Control
 		}
 		if(forced)
 		{
-			PlaySong(songChoice.Item1, songChoice.Item2, 0, true);
+			bool reshuffle = CurrentMode != PlaybackMode.SHUFFLE;
+			PlaySong(songChoice.Item1, songChoice.Item2, 0, reshuffle);
 		}
 		else
 		{
