@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" path="res://Scripts/Main.cs" id="1_lekkf"]
 [ext_resource type="Material" uid="uid://comthkdvcgu84" path="res://Background/Back.tres" id="2_7wpbd"]
-[ext_resource type="Script" path="res://Scripts/AspectControl.cs" id="4_1ajvd"]
 [ext_resource type="Script" path="res://Scripts/AwakeControl.cs" id="4_60ajo"]
 [ext_resource type="PackedScene" uid="uid://cng6k33kwvenn" path="res://Scenes/ScrollingText.tscn" id="5_gh37n"]
 [ext_resource type="Texture2D" uid="uid://d3i3w5rm5iugq" path="res://Icons/Control Icons/PauseIcon.png" id="5_h0qsu"]
@@ -15,6 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://buanl7rmqe63m" path="res://Scenes/PlaylistButton.tscn" id="9_7767v"]
 [ext_resource type="PackedScene" uid="uid://bsr1jt1kglctp" path="res://Scenes/AlbumButton.tscn" id="10_70nue"]
 [ext_resource type="Texture2D" uid="uid://d3w2f8mapeclr" path="res://Icons/Control Icons/NextIcon.png" id="13_lkb0r"]
+[ext_resource type="PackedScene" uid="uid://cc5twy0dkrx3q" path="res://Scenes/CycleButton.tscn" id="13_rvubj"]
 [ext_resource type="PackedScene" uid="uid://co8huorpl6ey1" path="res://Scenes/AddFolderWindow.tscn" id="15_fmtrf"]
 [ext_resource type="PackedScene" uid="uid://cldlxder467b6" path="res://Scenes/AddPlaylistWindow.tscn" id="16_eblsy"]
 [ext_resource type="PackedScene" uid="uid://brw2rnv3gcadh" path="res://Scenes/BackgroundOptionWindow.tscn" id="18_b8yrg"]
@@ -162,8 +162,6 @@ theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
-script = ExtResource("4_1ajvd")
-resolution = Vector2(1280, 720)
 
 [node name="HSplit" type="BoxContainer" parent="Margins"]
 layout_mode = 2
@@ -256,46 +254,29 @@ icon = ExtResource("13_lkb0r")
 icon_alignment = 1
 expand_icon = true
 
-[node name="PlaybackTypeOptions" type="OptionButton" parent="Margins/HSplit/Player/PlayControl/VSplit/Controls"]
+[node name="PlaybackTypeOptions" parent="Margins/HSplit/Player/PlayControl/VSplit/Controls" instance=ExtResource("13_rvubj")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.3
 focus_mode = 0
-alignment = 1
-item_count = 4
-selected = 0
-popup/item_0/text = "Stop"
-popup/item_0/id = 0
-popup/item_1/text = "Loop"
-popup/item_1/id = 1
-popup/item_2/text = "Loop 1"
-popup/item_2/id = 2
-popup/item_3/text = "Shuffle"
-popup/item_3/id = 3
+toggle_mode = true
+action_mode = 0
+text = "Stop"
+labels = PackedStringArray("Stop", "Loop", "Loop 1", "Shuffle")
 
-[node name="PlaybackSpeedOptions" type="OptionButton" parent="Margins/HSplit/Player/PlayControl/VSplit/Controls"]
+[node name="PlaybackSpeedOptions" parent="Margins/HSplit/Player/PlayControl/VSplit/Controls" instance=ExtResource("13_rvubj")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.3
 focus_mode = 0
-alignment = 1
-item_count = 6
-selected = 1
-popup/item_0/text = "x0.5"
-popup/item_0/id = 0
-popup/item_1/text = "x1.0"
-popup/item_1/id = 1
-popup/item_2/text = "x1.5"
-popup/item_2/id = 2
-popup/item_3/text = "x2.0"
-popup/item_3/id = 3
-popup/item_4/text = "x2.5"
-popup/item_4/id = 4
-popup/item_5/text = "x3.0"
-popup/item_5/id = 5
+toggle_mode = true
+action_mode = 0
+text = "x1.0"
+labels = PackedStringArray("x0.5", "x1.0", "x2.0", "x3.0")
+CurrentIndex = 1
 
 [node name="spacer3" type="Control" parent="Margins/HSplit/Player/PlayControl/VSplit/Controls"]
 layout_mode = 2
@@ -507,8 +488,8 @@ visible = false
 [connection signal="pressed" from="Margins/HSplit/Player/PlayControl/VSplit/Controls/PlayButton" to="." method="TogglePlay"]
 [connection signal="pressed" from="Margins/HSplit/Player/PlayControl/VSplit/Controls/NextButton" to="." method="NextChapter"]
 [connection signal="pressed" from="Margins/HSplit/Player/PlayControl/VSplit/Controls/NextButton" to="." method="NextSong" binds= [true]]
-[connection signal="item_selected" from="Margins/HSplit/Player/PlayControl/VSplit/Controls/PlaybackTypeOptions" to="." method="SetPlaybackMode"]
-[connection signal="item_selected" from="Margins/HSplit/Player/PlayControl/VSplit/Controls/PlaybackSpeedOptions" to="." method="SetSpeedPlayback"]
+[connection signal="SelectLabel" from="Margins/HSplit/Player/PlayControl/VSplit/Controls/PlaybackTypeOptions" to="." method="SetPlaybackMode"]
+[connection signal="SelectLabel" from="Margins/HSplit/Player/PlayControl/VSplit/Controls/PlaybackSpeedOptions" to="." method="SetSpeedPlayback"]
 [connection signal="button_down" from="Margins/HSplit/Player/PlayControl/VSplit/SeekBar/TimeSlider" to="." method="StartSeeking"]
 [connection signal="button_up" from="Margins/HSplit/Player/PlayControl/VSplit/SeekBar/TimeSlider" to="." method="SeekTime"]
 [connection signal="pressed" from="Margins/HSplit/Player/Songs/MarginContainer/VSplit/HSplit/PlayAlbumButton" to="." method="PlayAlbum"]

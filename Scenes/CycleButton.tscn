@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://cc5twy0dkrx3q"]
+
+[ext_resource type="Script" path="res://Scripts/CycleButton.cs" id="1_b1r2y"]
+
+[node name="CycleButton" type="Button"]
+offset_right = 8.0
+offset_bottom = 8.0
+script = ExtResource("1_b1r2y")

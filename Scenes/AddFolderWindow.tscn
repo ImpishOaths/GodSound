@@ -69,6 +69,7 @@ size = Vector2i(687, 466)
 ok_button_text = "Select Current Folder"
 file_mode = 2
 access = 2
+use_native_dialog = true
 
 [connection signal="close_requested" from="." to="." method="CancelButton"]
 [connection signal="pressed" from="Margin/VBox/HBox1/ChangePath" to="ChooseFolder" method="show"]

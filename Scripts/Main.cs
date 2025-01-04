@@ -44,8 +44,8 @@ public partial class Main : Control
 	private ScrollingText SongNameLabel;
 	private ColorRect RainbowBackground;
 	private ColorRect FlatBackground;
-	private OptionButton PlaybackType;
-	private OptionButton PlaybackSpeed;
+	private CycleButton PlaybackType;
+	private CycleButton PlaybackSpeed;
 	private Control SetBookmark;
 	private ScrollingText BookmarkLabel;
 
@@ -71,7 +71,7 @@ public partial class Main : Control
 	public Playlist SelectedPlaylist {get; private set;}
 
 	public enum PlaybackMode {STOP, LOOP, LOOP1, SHUFFLE}
-	public float[] SpeedOptions = {0.5f, 1.0f, 1.5f, 2.0f, 2.5f, 3.0f};
+	public float[] SpeedOptions = {0.5f, 1.0f, 2.0f, 3.0f};
 	public PlaybackMode CurrentMode = PlaybackMode.STOP;
 	public Queue<int> ShuffleList = new Queue<int>();
 	public Random random;
@@ -100,8 +100,8 @@ public partial class Main : Control
 		AwakeControl = GetNode<AwakeControl>("%AwakeControl");
 		RainbowBackground = GetNode<ColorRect>("%RainbowBackground");
 		FlatBackground = GetNode<ColorRect>("%FlatBackground");
-		PlaybackType = GetNode<OptionButton>("%PlaybackTypeOptions");
-		PlaybackSpeed = GetNode<OptionButton>("%PlaybackSpeedOptions");
+		PlaybackType = GetNode<CycleButton>("%PlaybackTypeOptions");
+		PlaybackSpeed = GetNode<CycleButton>("%PlaybackSpeedOptions");
 		SetBookmark = GetNode<Control>("%SetBookmark");
 		BookmarkLabel = GetNode<ScrollingText>("%BookmarkLabel");
 		WavePlayer = new WaveOutEvent();
@@ -133,7 +133,7 @@ public partial class Main : Control
 		await hook.RunAsync();
 	}
 
-    public override void _ExitTree()
+	public override void _ExitTree()
 	{
 		hook.Dispose();
 		SaveLibrary();
@@ -178,7 +178,7 @@ public partial class Main : Control
 	{
 		CurrentMode = (PlaybackMode)mode;
 		ProgramSettings.playbackMode = CurrentMode;
-		PlaybackType.Selected = mode;
+		PlaybackType.SetIndex(mode);
 		if(CurrentMode != PlaybackMode.SHUFFLE)
 			ShuffleList = new Queue<int>();
 	}
@@ -285,7 +285,7 @@ public partial class Main : Control
 		List<int> tempList = new List<int>(Enumerable.Range(0, playlist.songs.Count));
 		for(int i = 0; i < tempList.Count; ++i)
 		{
-			int swapIndex1 = random.Next(tempList.Count);
+			int swapIndex1 = i;
 			int swapIndex2 = random.Next(tempList.Count);
 			int swapVal1 = tempList[swapIndex1];
 			tempList[swapIndex1] = tempList[swapIndex2];
@@ -355,7 +355,7 @@ public partial class Main : Control
 		var seek = (long)((double)Reader.Length * seekRatio);
 		Reader.Seek(seek, SeekOrigin.Current);
 		SpeedControl.Init(Reader, seek);
-		SetSpeedPlayback(PlaybackSpeed.Selected);
+		SetSpeedPlayback(PlaybackSpeed.CurrentIndex);
 
 		WavePlayer.Init(SpeedControl);
 		SelectSong(playlist, index);
@@ -483,7 +483,7 @@ public partial class Main : Control
 
 	private void AddFolder(AddFolderArguments args)
 	{
-        List<string> extensionList = new List<string>() {".mp3",".wma",".flac",".wav"};
+		List<string> extensionList = new List<string>() {".mp3",".wma",".flac",".wav"};
 		string[] fileNames = Directory.GetFiles(args.folder);
 		SortedDictionary<TagLib.File, string> files = new SortedDictionary<TagLib.File, string>(
 			Comparer<TagLib.File>.Create(
@@ -691,14 +691,14 @@ public partial class Main : Control
 			UpdateTimeTracker();
 			if(ActiveBookmark != null)
 			{
-                Bookmark current = new()
-                {
-                    chapterIndex = PlayingIndex,
-                    chapterPositionRatio = GetCurrentSongTimeRatio(),
-                    chapterTime = ActiveBookmark.chapterPositionRatio * PlayingSong.songLength
-                };
+				Bookmark current = new()
+				{
+					chapterIndex = PlayingIndex,
+					chapterPositionRatio = GetCurrentSongTimeRatio(),
+					chapterTime = ActiveBookmark.chapterPositionRatio * PlayingSong.songLength
+				};
 
-                if (current.LaterThan(ActiveBookmark))
+				if (current.LaterThan(ActiveBookmark))
 				{
 					ActiveBookmark.chapterIndex = current.chapterIndex;
 					ActiveBookmark.chapterPositionRatio = current.chapterPositionRatio;
@@ -902,13 +902,13 @@ public class Song
 		return GetLengthMinutesSeconds(songLength);
 	}
 
-    public override bool Equals(object obj)
-    {
-        return obj.GetHashCode() == GetHashCode();
-    }
+	public override bool Equals(object obj)
+	{
+		return obj.GetHashCode() == GetHashCode();
+	}
 
-    public override int GetHashCode()
-    {
-        return filePath.GetHashCode();
-    }
+	public override int GetHashCode()
+	{
+		return filePath.GetHashCode();
+	}
 }
