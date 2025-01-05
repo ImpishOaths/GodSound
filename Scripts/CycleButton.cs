@@ -5,7 +5,7 @@ using Godot.Collections;
 public partial class CycleButton : Button
 {
 	[Export]
-	private string[] labels;
+	private Array<string> labels = new();
 	private int _currentIndex = 0;
 	[Export]
 	public int CurrentIndex {get {return _currentIndex;} private set {_currentIndex = value; Update();}}
@@ -21,7 +21,7 @@ public partial class CycleButton : Button
 	public void OnPressed()
 	{
 		_currentIndex += 1;
-		if(_currentIndex >= labels.Length)
+		if(_currentIndex >= labels.Count)
 			_currentIndex = 0;
 		EmitSignal("SelectLabel", CurrentIndex);
 		Update();
@@ -29,12 +29,14 @@ public partial class CycleButton : Button
 
 	public void Update()
 	{
-		Text = labels[_currentIndex];
+		if(_currentIndex < labels.Count)
+			Text = labels[_currentIndex];
 	}
 
 	public void SetIndex(int index, bool signal = false)
 	{
 		_currentIndex = index;
+		Update();
 		if(signal)
 			EmitSignal("SelectLabel",CurrentIndex);
 	}

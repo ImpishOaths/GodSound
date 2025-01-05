@@ -263,7 +263,7 @@ focus_mode = 0
 toggle_mode = true
 action_mode = 0
 text = "Stop"
-labels = PackedStringArray("Stop", "Loop", "Loop 1", "Shuffle")
+labels = ["Stop", "Loop", "Loop 1", "Shuffle"]
 
 [node name="PlaybackSpeedOptions" parent="Margins/HSplit/Player/PlayControl/VSplit/Controls" instance=ExtResource("13_rvubj")]
 unique_name_in_owner = true
@@ -275,7 +275,7 @@ focus_mode = 0
 toggle_mode = true
 action_mode = 0
 text = "x1.0"
-labels = PackedStringArray("x0.5", "x1.0", "x2.0", "x3.0")
+labels = ["x0.5", "x1.0", "x2.0", "x3.0"]
 CurrentIndex = 1
 
 [node name="spacer3" type="Control" parent="Margins/HSplit/Player/PlayControl/VSplit/Controls"]
