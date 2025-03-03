@@ -125,9 +125,9 @@ public partial class Main : Control
 
 		hook = new SimpleGlobalHook();
 		hook.KeyPressed += (sender, e) => {
-			if(e.Data.KeyCode ==  KeyCode.VcMediaPlay)
+			if(e.Data.KeyCode ==  KeyCode.VcPause)
 				scheduleTogglePlay = true;
-			if(e.Data.KeyCode ==  KeyCode.VcMediaNext)
+			if(e.Data.KeyCode ==  KeyCode.VcEnd)
 				scheduleNext = true;
 		};
 		await hook.RunAsync();
@@ -676,12 +676,12 @@ public partial class Main : Control
 
 	public override void _Process(double delta)
 	{
-		if(scheduleTogglePlay)
+		if(scheduleTogglePlay || Input.IsActionJustPressed("PLAY"))
 		{
 			scheduleTogglePlay = false;
 			TogglePlay();
 		}
-		if(scheduleNext)
+		if(scheduleNext || Input.IsActionJustPressed("NEXT"))
 		{
 			scheduleNext = false;
 			NextSong(true);
