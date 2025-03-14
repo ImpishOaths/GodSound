@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://653c7x3gw1pc"]
 
-[ext_resource type="Script" path="res://Scripts/SongButton.cs" id="1_b5sx2"]
+[ext_resource type="Script" uid="uid://byuwcv5rso3bn" path="res://Scripts/SongButton.cs" id="1_b5sx2"]
 [ext_resource type="PackedScene" uid="uid://cng6k33kwvenn" path="res://Scenes/ScrollingText.tscn" id="1_jebhw"]
 
 [node name="SongButton" type="Button"]

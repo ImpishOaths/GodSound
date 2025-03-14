@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://bsr1jt1kglctp"]
 
-[ext_resource type="Script" path="res://Scripts/AlbumButton.cs" id="1_pq0q0"]
+[ext_resource type="Script" uid="uid://cooj8joj83k0r" path="res://Scripts/AlbumButton.cs" id="1_pq0q0"]
 
 [sub_resource type="Gradient" id="Gradient_g1hs0"]
 

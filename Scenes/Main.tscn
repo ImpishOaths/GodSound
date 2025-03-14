@@ -1,15 +1,15 @@
 [gd_scene load_steps=23 format=3 uid="uid://baxag34uh3hvc"]
 
-[ext_resource type="Script" path="res://Scripts/Main.cs" id="1_lekkf"]
+[ext_resource type="Script" uid="uid://dliwpyt22uhv1" path="res://Scripts/Main.cs" id="1_lekkf"]
 [ext_resource type="Material" uid="uid://comthkdvcgu84" path="res://Background/Back.tres" id="2_7wpbd"]
-[ext_resource type="Script" path="res://Scripts/AwakeControl.cs" id="4_60ajo"]
+[ext_resource type="Script" uid="uid://ybm51ptl6pb1" path="res://Scripts/AwakeControl.cs" id="4_60ajo"]
 [ext_resource type="PackedScene" uid="uid://cng6k33kwvenn" path="res://Scenes/ScrollingText.tscn" id="5_gh37n"]
 [ext_resource type="Texture2D" uid="uid://d3i3w5rm5iugq" path="res://Icons/Control Icons/PauseIcon.png" id="5_h0qsu"]
 [ext_resource type="PackedScene" uid="uid://653c7x3gw1pc" path="res://Scenes/SongButton.tscn" id="7_7rhl2"]
 [ext_resource type="Texture2D" uid="uid://ns3birboomk8" path="res://Icons/Control Icons/PlayIcon.png" id="7_fm5yq"]
 [ext_resource type="Texture2D" uid="uid://bl3b4dd2wggmx" path="res://Icons/Control Icons/LoopIcon.png" id="7_iw7lk"]
 [ext_resource type="Texture2D" uid="uid://m0lit6kg4ncm" path="res://Icons/Control Icons/LoopOneIcon.png" id="8_epx4s"]
-[ext_resource type="Script" path="res://Scripts/ScrollbarSpacer.cs" id="8_hcmg4"]
+[ext_resource type="Script" uid="uid://c4a5cpic4xdkm" path="res://Scripts/ScrollbarSpacer.cs" id="8_hcmg4"]
 [ext_resource type="PackedScene" uid="uid://cn7tbtfias7p5" path="res://Scenes/CustomSlider.tscn" id="8_kuu8f"]
 [ext_resource type="PackedScene" uid="uid://buanl7rmqe63m" path="res://Scenes/PlaylistButton.tscn" id="9_7767v"]
 [ext_resource type="PackedScene" uid="uid://bsr1jt1kglctp" path="res://Scenes/AlbumButton.tscn" id="10_70nue"]
@@ -104,9 +104,9 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_neiuf"]
 _data = {
-"FadeIn": SubResource("Animation_1ugn0"),
-"FadeOut": SubResource("Animation_s5nnr"),
-"RESET": SubResource("Animation_sqy71")
+&"FadeIn": SubResource("Animation_1ugn0"),
+&"FadeOut": SubResource("Animation_s5nnr"),
+&"RESET": SubResource("Animation_sqy71")
 }
 
 [node name="Main" type="Control"]
@@ -148,7 +148,7 @@ grow_vertical = 2
 [node name="FadeAnimator" type="AnimationPlayer" parent="."]
 unique_name_in_owner = true
 libraries = {
-"": SubResource("AnimationLibrary_neiuf")
+&"": SubResource("AnimationLibrary_neiuf")
 }
 
 [node name="Margins" type="MarginContainer" parent="."]
@@ -263,7 +263,7 @@ focus_mode = 0
 toggle_mode = true
 action_mode = 0
 text = "Stop"
-labels = ["Stop", "Loop", "Loop 1", "Shuffle"]
+labels = Array[String](["Stop", "Loop", "Loop 1", "Shuffle"])
 
 [node name="PlaybackSpeedOptions" parent="Margins/HSplit/Player/PlayControl/VSplit/Controls" instance=ExtResource("13_rvubj")]
 unique_name_in_owner = true
@@ -275,7 +275,7 @@ focus_mode = 0
 toggle_mode = true
 action_mode = 0
 text = "x1.0"
-labels = ["x0.5", "x1.0", "x2.0", "x3.0"]
+labels = Array[String](["x0.5", "x1.0", "x2.0", "x3.0"])
 CurrentIndex = 1
 
 [node name="spacer3" type="Control" parent="Margins/HSplit/Player/PlayControl/VSplit/Controls"]

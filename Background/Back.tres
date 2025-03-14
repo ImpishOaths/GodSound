@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://comthkdvcgu84"]
 
-[ext_resource type="Shader" path="res://Background/Background.gdshader" id="1_eloii"]
+[ext_resource type="Shader" uid="uid://chh07g0hoskai" path="res://Background/Background.gdshader" id="1_eloii"]
 [ext_resource type="Texture2D" uid="uid://b70m6xsd74vk4" path="res://Background/Noise.tres" id="2_wm8ro"]
 [ext_resource type="Texture2D" uid="uid://neinsu47ndv" path="res://Background/Gradient.tres" id="3_qdvpe"]
 

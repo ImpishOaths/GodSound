@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://co8huorpl6ey1"]
 
-[ext_resource type="Script" path="res://Scripts/AddFolderWindow.cs" id="1_ulc4v"]
+[ext_resource type="Script" uid="uid://cvivkcow4a28m" path="res://Scripts/AddFolderWindow.cs" id="1_ulc4v"]
 
 [node name="AddFolderWindow" type="Window"]
 title = "Add Folder"
