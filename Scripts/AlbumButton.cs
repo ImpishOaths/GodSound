@@ -5,6 +5,7 @@ public partial class AlbumButton : Control
 {
 	public TextureRect albumCover;
 	public Button selectAlbumButton;
+	public bool MouseOver;
 
 	public override void _Ready()
 	{
@@ -15,6 +16,8 @@ public partial class AlbumButton : Control
 	public void Initialize(Album album)
 	{
 		selectAlbumButton.Pressed += ()=>{Main.Instance.SetPlaylist(album);};
+		selectAlbumButton.MouseEntered += ()=>{MouseOver = true;};
+		selectAlbumButton.MouseExited += ()=>{MouseOver = false;};
 		
 		Image img = new Image();
 		ImageTexture tex = new ImageTexture();
@@ -32,4 +35,15 @@ public partial class AlbumButton : Control
 		tex.SetImage(img);
 		albumCover.Texture = tex;
 	}
+
+    public override void _Process(double delta)
+    {
+		if(MouseOver == false)
+			return;
+		
+		if(Input.IsMouseButtonPressed(MouseButton.Left))
+		{
+			//GD.Print("hi");
+		}
+    }
 }

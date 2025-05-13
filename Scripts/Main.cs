@@ -54,7 +54,6 @@ public partial class Main : Control
 
 	private Queue<AddFolderArguments> AddFolderStack = new Queue<AddFolderArguments>();
 	public Dictionary<string, Playlist> Library = new Dictionary<string, Playlist>();
-	public bool libraryDirty = true;
 	public bool seeking = false;
 
 	private AudioFileReader Reader;
@@ -123,6 +122,8 @@ public partial class Main : Control
 		RefreshLibrary();
 		ReflectSettings();
 
+		GetTree().AutoAcceptQuit = false;
+
 		hook = new SimpleGlobalHook();
 		hook.KeyPressed += (sender, e) => {
 			if(e.Data.KeyCode ==  KeyCode.VcPause)
@@ -133,13 +134,17 @@ public partial class Main : Control
 		await hook.RunAsync();
 	}
 
-	public override void _ExitTree()
+	public override void _Notification(int what)
 	{
-		hook.Dispose();
-		SaveLibrary();
-		SaveSettings();
-		if(PlayingPlaylist != null && PlayingPlaylist.GetPlaylistType() == Playlist.Type.AUDIOBOOK && ActiveBookmark != null)
-			WriteBookmark(((Audiobook)PlayingPlaylist).bookmarkPath, ActiveBookmark);
+		if (what == NotificationWMCloseRequest)
+		{
+			hook.Dispose();
+			SaveLibrary();
+			SaveSettings();
+			if(PlayingPlaylist != null && PlayingPlaylist.GetPlaylistType() == Playlist.Type.AUDIOBOOK && ActiveBookmark != null)
+				WriteBookmark(((Audiobook)PlayingPlaylist).bookmarkPath, ActiveBookmark);
+			GetTree().Quit();
+		}
 	}
 
 	public void SelectSong(Playlist playlist, int index)
@@ -520,6 +525,7 @@ public partial class Main : Control
 					playlist = MakeAudiobookWithBookmark(file.Key.Tag, args.folder);
 				else
 					playlist = new Album(file.Key.Tag);
+				playlist.LibraryOrder = Library.Count;
 				Library.Add(album, playlist);
 				AddAlbumButton((Album)playlist, args.isAudiobook);
 			}
@@ -546,22 +552,32 @@ public partial class Main : Control
 		}
 	}
 
-	public bool LoadLibrary(string path = "user://library.json")
+	public bool LoadLibrary(string path = "user://library/")
 	{
-		var file = Godot.FileAccess.Open(path, Godot.FileAccess.ModeFlags.Read);
-		if(file == null)
+		var folder = DirAccess.DirExistsAbsolute(path);
+		if(folder == false)
 			return false;
-		var library = JsonConvert.DeserializeObject<Library>(file.GetAsText(), SerializerSettings);
-		if(library == null)
-			return false;
-		Library = library.ToDictionary();
+		string[] files = DirAccess.GetFilesAt(path);
+		foreach(string fileName in files)
+		{
+			var file = Godot.FileAccess.GetFileAsString(path + fileName);
+			var playlist = JsonConvert.DeserializeObject<Playlist>(file, SerializerSettings);
+			Library.Add(playlist.playlistName, playlist);
+		}
 		return true;
 	}
 
-	public void SaveLibrary(string path = "user://library.json")
+	public void SaveLibrary(string path = "user://library/")
 	{
-		var file = Godot.FileAccess.Open(path, Godot.FileAccess.ModeFlags.Write);
-		file.StoreString(JsonConvert.SerializeObject(new Library(Library), Formatting.Indented, SerializerSettings));
+		DirAccess.MakeDirAbsolute(path);
+		float index = 0;
+		foreach(var playlist in GetLibraryInOrder())
+		{
+			playlist.LibraryOrder = index;
+			index += 1;
+			var file = Godot.FileAccess.Open(path + playlist.CleanName() + ".json", Godot.FileAccess.ModeFlags.WriteRead);
+			file.StoreString(JsonConvert.SerializeObject(playlist, Formatting.Indented, SerializerSettings));
+		}
 	}
 
 	public void SaveSettings(string path = "user://settings.json")
@@ -572,10 +588,10 @@ public partial class Main : Control
 
 	public bool LoadSettings(string path = "user://settings.json")
 	{
-		var file = Godot.FileAccess.Open(path, Godot.FileAccess.ModeFlags.Read);
-		if(file == null)
+		var file = Godot.FileAccess.GetFileAsString(path);
+		if(file == "")
 			return false;
-		var settings = JsonConvert.DeserializeObject<Settings>(file.GetAsText(), SerializerSettings);
+		var settings = JsonConvert.DeserializeObject<Settings>(file, SerializerSettings);
 		if(settings == null)
 			return false;
 		ProgramSettings = settings;
@@ -604,6 +620,13 @@ public partial class Main : Control
 		SetPlaybackMode((int)ProgramSettings.playbackMode);
 	}
 
+	public List<Playlist> GetLibraryInOrder()
+	{
+		List<Playlist> playlists = [.. Library.Values];
+		playlists.Sort((a, b) => {return a.LibraryOrder.CompareTo(b.LibraryOrder);});
+		return playlists;
+	}
+
 	public void RefreshLibrary()
 	{
 		foreach(var child in PlaylistContainer.GetChildren())
@@ -613,7 +636,8 @@ public partial class Main : Control
 		foreach(var child in AudiobookGrid.GetChildren())
 			child.QueueFree();
 
-		foreach(var playlist in Library.Values)
+
+		foreach(var playlist in GetLibraryInOrder())
 		{
 			switch(playlist.GetPlaylistType())
 			{
@@ -628,7 +652,6 @@ public partial class Main : Control
 					break;
 			}
 		}
-		libraryDirty = false;
 	}
 
 	public void PickDefaultPlaylist()
@@ -720,10 +743,6 @@ public partial class Main : Control
 				DefferedSongUpdate = null;
 			}
 		}
-		if(libraryDirty)
-		{
-			RefreshLibrary();
-		}
 		if(AddFolderStack.Count > 0)
 		{
 			var args = AddFolderStack.Dequeue();
@@ -784,44 +803,32 @@ public class Settings
 	public Main.PlaybackMode playbackMode = Main.PlaybackMode.STOP;
 }
 
-public class Library
-{
-	public List<string> playlistNames = new List<string>();
-	public List<Playlist> playlists = new List<Playlist>();
-
-	public Library(Dictionary<string, Playlist> dict)
-	{
-		if(dict != null)
-		{
-			foreach(var pair in dict)
-			{
-				playlistNames.Add(pair.Key);
-				playlists.Add(pair.Value);
-			}
-		}
-	}
-
-	public Dictionary<string, Playlist> ToDictionary()
-	{
-		Dictionary<string, Playlist> ret = new Dictionary<string, Playlist>();
-		for(int i = 0; i < playlistNames.Count; ++i)
-		{
-			ret.Add(playlistNames[i], playlists[i]);
-		}
-		return ret;
-	}
-}
-
 public class Playlist
 {
 	public string playlistName;
 	public List<Song> songs;
-	public virtual Type GetPlaylistType() {return Type.PLAYLIST;}
+	public float LibraryOrder;
+
+    public class PlaylistComparer() : IComparer<string>
+    {
+		public SortedDictionary<string, Playlist> Library;
+        public int Compare(string x, string y)
+        {
+			return Library[x].LibraryOrder.CompareTo(Library[y].LibraryOrder);
+        }
+    }
+
+    public virtual Type GetPlaylistType() {return Type.PLAYLIST;}
 	public enum Type
 	{
 		PLAYLIST,
 		ALBUM,
 		AUDIOBOOK
+	}
+
+	public string CleanName()
+	{
+		return playlistName.Replace(':','_').Replace('/','_');
 	}
 }
 
