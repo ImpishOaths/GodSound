@@ -1,7 +1,4 @@
 using Godot;
-using System;
-
-using System.Collections.Generic;
 
 public partial class PlaylistButton : Button
 {
@@ -33,6 +30,7 @@ public partial class PlaylistButton : Button
 		if(playlist.songs.Contains(Main.Instance.PlayingSong) == false)
 			playlist.songs.Add(Main.Instance.PlayingSong);
 		RefreshPlaylistVisuals();
+		Main.Instance.BufferSavePlaylist.Add(playlist.playlistName);
 	}
 
 	public void RemoveSongPressed()
@@ -41,6 +39,7 @@ public partial class PlaylistButton : Button
 		if(playlist == Main.Instance.SelectedPlaylist)
 			Main.Instance.SetPlaylist(playlist);
 		RefreshPlaylistVisuals();
+		Main.Instance.BufferSavePlaylist.Add(playlist.playlistName);
 	}
 
 	public void AddAlbumPressed()
@@ -49,6 +48,7 @@ public partial class PlaylistButton : Button
 			if(playlist.songs.Contains(song) == false)
 				playlist.songs.Add(song);
 		RefreshPlaylistVisuals();
+		Main.Instance.BufferSavePlaylist.Add(playlist.playlistName);
 	}
 
 	public void RemoveAlbumPressed()
@@ -58,5 +58,6 @@ public partial class PlaylistButton : Button
 		foreach(var song in Main.Instance.SelectedPlaylist.songs)
 			playlist.songs.Remove(song);
 		RefreshPlaylistVisuals();
+		Main.Instance.BufferSavePlaylist.Add(playlist.playlistName);
 	}
 }

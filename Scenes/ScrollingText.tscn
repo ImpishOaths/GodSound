@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cng6k33kwvenn"]
 
-[ext_resource type="Script" uid="uid://qlpsqv5yy6sm" path="res://Scripts/ScrollingText.cs" id="1_rwd4m"]
+[ext_resource type="Script" uid="uid://dgvv1ssxjgsnf" path="res://Scripts/ScrollingText.cs" id="1_rwd4m"]
 
 [node name="ScrollingText" type="Control"]
 clip_children = 1

@@ -26,9 +26,9 @@ public partial class Main : Control
 	[Export]
 	public Texture2D PlayButtonIcon;
 	[Export]
-	public Texture2D LoopButtonIcon;
+	public string LibraryPath = "user://library/";
 	[Export]
-	public Texture2D LoopOnceButtonIcon;
+	public string SettingsPath = "user://settings.json";
 
 	private Control PlaylistContainer;
 	private Control AlbumGrid;
@@ -52,8 +52,10 @@ public partial class Main : Control
 	private AwakeControl AwakeControl;
 	public Settings ProgramSettings = new Settings();
 
-	private Queue<AddFolderArguments> AddFolderStack = new Queue<AddFolderArguments>();
-	public Dictionary<string, Playlist> Library = new Dictionary<string, Playlist>();
+	private Queue<AddFolderArguments> AddFolderQueue = new Queue<AddFolderArguments>();
+	public readonly Dictionary<string, LibraryObject> Library = [];
+	public SortedSet<string> LoadAlbumQueue = [];
+	public List<string> BufferSavePlaylist = [];
 	public bool seeking = false;
 
 	private AudioFileReader Reader;
@@ -114,12 +116,9 @@ public partial class Main : Control
 		SpeedControl.OnStopped += ()=>{NextChapter();};
 
 		instance = this;
-		if(LoadLibrary() == false)
-			SaveLibrary();
+		PreloadLibrary();
 		if(LoadSettings() == false)
 			SaveSettings();
-		PickDefaultPlaylist();
-		RefreshLibrary();
 		ReflectSettings();
 
 		GetTree().AutoAcceptQuit = false;
@@ -139,7 +138,6 @@ public partial class Main : Control
 		if (what == NotificationWMCloseRequest)
 		{
 			hook.Dispose();
-			SaveLibrary();
 			SaveSettings();
 			if(PlayingPlaylist != null && PlayingPlaylist.GetPlaylistType() == Playlist.Type.AUDIOBOOK && ActiveBookmark != null)
 				WriteBookmark(((Audiobook)PlayingPlaylist).bookmarkPath, ActiveBookmark);
@@ -474,7 +472,7 @@ public partial class Main : Control
 		args.folder = folder;
 		args.isRecursive = isRecursive;
 		args.isAudiobook = isAudiobook;
-		AddFolderStack.Enqueue(args);
+		AddFolderQueue.Enqueue(args);
 	}
 
 	public void NewPlaylist(string name)
@@ -482,8 +480,15 @@ public partial class Main : Control
 		Playlist playlist = new Playlist();
 		playlist.playlistName = name;
 		playlist.songs = new List<Song>();
-		Library.Add(name, playlist);
-		AddPlaylistButton(playlist);
+		LibraryObject libO = new()
+		{
+			Playlist = playlist,
+			Path = $"~{Library.Count:0000}0{playlist.GetCleanName()}.json"
+		};
+		Library.Add(name, libO);
+		var button = AddPlaylistButton(playlist);
+		libO.Button = button;
+		SavePlaylist(libO);
 	}
 
 	private void AddFolder(AddFolderArguments args)
@@ -517,31 +522,31 @@ public partial class Main : Control
 		foreach(var file in files)
 		{
 			string album = file.Key.Tag.Album;
-			if(album == null)
-				album = "";
-			if(Library.TryGetValue(album, out Playlist playlist) == false)
+			album ??= "";
+			if(Library.TryGetValue(album, out LibraryObject libO) == false)
 			{
+				libO = new();
 				if(args.isAudiobook)
-					playlist = MakeAudiobookWithBookmark(file.Key.Tag, args.folder);
+					libO.Playlist = MakeAudiobookWithBookmark(file.Key.Tag, args.folder);
 				else
-					playlist = new Album(file.Key.Tag);
-				playlist.LibraryOrder = Library.Count;
-				Library.Add(album, playlist);
-				AddAlbumButton((Album)playlist, args.isAudiobook);
+					libO.Playlist = new Album(file.Key.Tag);
+				libO.Path = $"{Library.Count:0000}0{libO.Playlist.GetCleanName()}.json";
+				Library.Add(album, libO);
+				libO.Button = AddAlbumButton((Album)libO.Playlist, args.isAudiobook);
 			}
 			if(albumTrackIndex.TryGetValue(album, out Dictionary<int, int> trackIndex) == false)
 			{
 				trackIndex = new Dictionary<int, int>();
 				albumTrackIndex.Add(album, trackIndex);
-				for(int i = 0; i < Library[album].songs.Count; ++i)
+				for(int i = 0; i < Library[album].Playlist.songs.Count; ++i)
 				{
-					trackIndex.Add(Library[album].songs[i].trackNumber, i);
+					trackIndex.Add(Library[album].Playlist.songs[i].trackNumber, i);
 				}
 			}
 			if(trackIndex.TryGetValue((int)file.Key.Tag.Track, out int index))
-				playlist.songs[index] = MakeSong(file.Key, file.Value);
+				libO.Playlist.songs[index] = MakeSong(file.Key, file.Value);
 			else
-				playlist.songs.Add(MakeSong(file.Key, file.Value));
+				libO.Playlist.songs.Add(MakeSong(file.Key, file.Value));
 		}
 
 		if(args.isRecursive)
@@ -552,43 +557,45 @@ public partial class Main : Control
 		}
 	}
 
-	public bool LoadLibrary(string path = "user://library/")
+	public bool PreloadLibrary()
 	{
-		var folder = DirAccess.DirExistsAbsolute(path);
-		if(folder == false)
-			return false;
-		string[] files = DirAccess.GetFilesAt(path);
+		DirAccess.MakeDirAbsolute(LibraryPath);
+		string[] files = DirAccess.GetFilesAt(LibraryPath);
 		foreach(string fileName in files)
-		{
-			var file = Godot.FileAccess.GetFileAsString(path + fileName);
-			var playlist = JsonConvert.DeserializeObject<Playlist>(file, SerializerSettings);
-			Library.Add(playlist.playlistName, playlist);
-		}
+			LoadAlbumQueue.Add(fileName);
 		return true;
 	}
-
-	public void SaveLibrary(string path = "user://library/")
+	
+	public Playlist LoadPlaylist(string path)
 	{
-		DirAccess.MakeDirAbsolute(path);
-		float index = 0;
-		foreach(var playlist in GetLibraryInOrder())
+		var file = Godot.FileAccess.GetFileAsString(LibraryPath + path);
+		var playlist = JsonConvert.DeserializeObject<Playlist>(file, SerializerSettings);
+		LibraryObject libO = new()
 		{
-			playlist.LibraryOrder = index;
-			index += 1;
-			var file = Godot.FileAccess.Open(path + playlist.CleanName() + ".json", Godot.FileAccess.ModeFlags.WriteRead);
-			file.StoreString(JsonConvert.SerializeObject(playlist, Formatting.Indented, SerializerSettings));
-		}
+			Playlist = playlist,
+			Path = path
+		};
+		Library.Add(playlist.playlistName, libO);
+		return playlist;
 	}
 
-	public void SaveSettings(string path = "user://settings.json")
+	public void SavePlaylist(LibraryObject libO)
 	{
-		var file = Godot.FileAccess.Open(path, Godot.FileAccess.ModeFlags.Write);
+		var file = Godot.FileAccess.Open(LibraryPath + libO.Path, Godot.FileAccess.ModeFlags.Write);
+		file.StoreString(JsonConvert.SerializeObject(libO.Playlist, Formatting.Indented, SerializerSettings));
+		file.Close();
+	}
+
+	public void SaveSettings()
+	{
+		var file = Godot.FileAccess.Open(SettingsPath, Godot.FileAccess.ModeFlags.Write);
 		file.StoreString(JsonConvert.SerializeObject(ProgramSettings, Formatting.Indented, SerializerSettings));
+		file.Close();
 	}
 
-	public bool LoadSettings(string path = "user://settings.json")
+	public bool LoadSettings()
 	{
-		var file = Godot.FileAccess.GetFileAsString(path);
+		var file = Godot.FileAccess.GetFileAsString(SettingsPath);
 		if(file == "")
 			return false;
 		var settings = JsonConvert.DeserializeObject<Settings>(file, SerializerSettings);
@@ -620,74 +627,44 @@ public partial class Main : Control
 		SetPlaybackMode((int)ProgramSettings.playbackMode);
 	}
 
-	public List<Playlist> GetLibraryInOrder()
-	{
-		List<Playlist> playlists = [.. Library.Values];
-		playlists.Sort((a, b) => {return a.LibraryOrder.CompareTo(b.LibraryOrder);});
-		return playlists;
-	}
-
-	public void RefreshLibrary()
-	{
-		foreach(var child in PlaylistContainer.GetChildren())
-			child.QueueFree();
-		foreach(var child in AlbumGrid.GetChildren())
-			child.QueueFree();
-		foreach(var child in AudiobookGrid.GetChildren())
-			child.QueueFree();
-
-
-		foreach(var playlist in GetLibraryInOrder())
-		{
-			switch(playlist.GetPlaylistType())
-			{
-				case Playlist.Type.PLAYLIST:
-					AddPlaylistButton(playlist);
-					break;
-				case Playlist.Type.ALBUM:
-					AddAlbumButton((Album)playlist, false);
-					break;
-				case Playlist.Type.AUDIOBOOK:
-					AddAlbumButton((Album)playlist, true);
-					break;
-			}
-		}
-	}
-
 	public void PickDefaultPlaylist()
 	{
-		if(ProgramSettings.playlist != "" && ProgramSettings.song != -1 && Library.TryGetValue(ProgramSettings.playlist, out Playlist defaultPlaylist) && defaultPlaylist.songs.Count > 0)
+		if(SelectedPlaylist != null)
+			return;
+		if(ProgramSettings.playlist != "" && ProgramSettings.song != -1 && Library.TryGetValue(ProgramSettings.playlist, out LibraryObject defaultLibO) && defaultLibO.Playlist.songs.Count > 0)
 		{
-			SetPlaylist(defaultPlaylist);
-			PlaySong(defaultPlaylist, ProgramSettings.song);
+			SetPlaylist(defaultLibO.Playlist);
+			PlaySong(defaultLibO.Playlist, ProgramSettings.song);
 			TogglePlay();
 			return;
 		}
-		foreach(var playlist in Library)
+		if(Library.Count > 0)
 		{
-			SetPlaylist(playlist.Value);
-			PlaySong(playlist.Value, 0);
+			LibraryObject libO = Library.Values.First();
+			SetPlaylist(libO.Playlist);
+			PlaySong(libO.Playlist, 0);
 			TogglePlay();
-			return;
 		}
 		SetPlaylist(null);
 	}
 
 	public void RemoveAlbum()
 	{
+		Library[SelectedPlaylist.playlistName].Button.QueueFree();
+		DirAccess.RemoveAbsolute(LibraryPath + Library[SelectedPlaylist.playlistName].Path);
 		Library.Remove(SelectedPlaylist.playlistName);
-		RefreshLibrary();
 		PickDefaultPlaylist();
 	}
 
-	public void AddPlaylistButton(Playlist playlist)
+	public Control AddPlaylistButton(Playlist playlist)
 	{
 		var button = PlaylistButtonScene.Instantiate<PlaylistButton>();
 		PlaylistContainer.AddChild(button);
 		button.Initialize(playlist);
+		return button;
 	}
 
-	public void AddAlbumButton(Album album, bool isAudiobook)
+	public Control AddAlbumButton(Album album, bool isAudiobook)
 	{
 		var button = AlbumButtonScene.Instantiate<AlbumButton>();
 		if(isAudiobook)
@@ -695,6 +672,7 @@ public partial class Main : Control
 		else
 			AlbumGrid.AddChild(button);
 		button.Initialize(album);
+		return button;
 	}
 
 	public override void _Process(double delta)
@@ -743,10 +721,37 @@ public partial class Main : Control
 				DefferedSongUpdate = null;
 			}
 		}
-		if(AddFolderStack.Count > 0)
+		if(AddFolderQueue.Count > 0)
 		{
-			var args = AddFolderStack.Dequeue();
+			var args = AddFolderQueue.Dequeue();
 			AddFolder(args);
+			if(AddFolderQueue.Count == 0)
+			{
+				foreach(LibraryObject libO in Library.Values)
+					SavePlaylist(libO);
+			}
+		}
+		int count = 0;
+		while(LoadAlbumQueue.Count > 0)
+		{
+			count += 1;
+			string path = LoadAlbumQueue.First();
+			LoadAlbumQueue.Remove(path);
+			var playlist = LoadPlaylist(path);
+			if(playlist is Album album)
+				Library[playlist.playlistName].Button = AddAlbumButton(album, album is Audiobook);
+			else
+				Library[playlist.playlistName].Button = AddPlaylistButton(playlist);
+			if(playlist.playlistName == ProgramSettings.playlist)
+				PickDefaultPlaylist();
+			if(count >= 5)
+				break;
+		}
+		while(BufferSavePlaylist.Count != 0)
+		{
+			var playlist = BufferSavePlaylist[0];
+			BufferSavePlaylist.RemoveAt(0);
+			SavePlaylist(Library[playlist]);
 		}
 	}
 
@@ -803,20 +808,17 @@ public class Settings
 	public Main.PlaybackMode playbackMode = Main.PlaybackMode.STOP;
 }
 
+public class LibraryObject
+{
+	public Playlist Playlist = null;
+	public Control Button = null;
+	public string Path = null;
+}
+
 public class Playlist
 {
 	public string playlistName;
 	public List<Song> songs;
-	public float LibraryOrder;
-
-    public class PlaylistComparer() : IComparer<string>
-    {
-		public SortedDictionary<string, Playlist> Library;
-        public int Compare(string x, string y)
-        {
-			return Library[x].LibraryOrder.CompareTo(Library[y].LibraryOrder);
-        }
-    }
 
     public virtual Type GetPlaylistType() {return Type.PLAYLIST;}
 	public enum Type
@@ -826,7 +828,7 @@ public class Playlist
 		AUDIOBOOK
 	}
 
-	public string CleanName()
+	public string GetCleanName()
 	{
 		return playlistName.Replace(':','_').Replace('/','_');
 	}

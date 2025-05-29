@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://buanl7rmqe63m"]
 
-[ext_resource type="Script" uid="uid://b7yxnpw2ksw77" path="res://Scripts/PlaylistButton.cs" id="1_c14gk"]
+[ext_resource type="Script" uid="uid://cdwh277r56yul" path="res://Scripts/PlaylistButton.cs" id="1_c14gk"]
 [ext_resource type="PackedScene" uid="uid://cng6k33kwvenn" path="res://Scenes/ScrollingText.tscn" id="1_fdd1i"]
 
 [node name="PlaylistButton" type="Button"]

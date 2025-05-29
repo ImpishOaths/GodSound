@@ -1,15 +1,13 @@
-[gd_scene load_steps=23 format=3 uid="uid://baxag34uh3hvc"]
+[gd_scene load_steps=21 format=3 uid="uid://baxag34uh3hvc"]
 
-[ext_resource type="Script" uid="uid://dliwpyt22uhv1" path="res://Scripts/Main.cs" id="1_lekkf"]
-[ext_resource type="Material" uid="uid://comthkdvcgu84" path="res://Background/Back.tres" id="2_7wpbd"]
-[ext_resource type="Script" uid="uid://ybm51ptl6pb1" path="res://Scripts/AwakeControl.cs" id="4_60ajo"]
+[ext_resource type="Script" uid="uid://btfeoxg88uo60" path="res://Scripts/Main.cs" id="1_lekkf"]
+[ext_resource type="Material" uid="uid://y7qusvcku25v" path="res://Background/Back.tres" id="2_7wpbd"]
+[ext_resource type="Script" uid="uid://wcnr8xj5i7lx" path="res://Scripts/AwakeControl.cs" id="4_60ajo"]
 [ext_resource type="PackedScene" uid="uid://cng6k33kwvenn" path="res://Scenes/ScrollingText.tscn" id="5_gh37n"]
 [ext_resource type="Texture2D" uid="uid://d3i3w5rm5iugq" path="res://Icons/Control Icons/PauseIcon.png" id="5_h0qsu"]
 [ext_resource type="PackedScene" uid="uid://653c7x3gw1pc" path="res://Scenes/SongButton.tscn" id="7_7rhl2"]
 [ext_resource type="Texture2D" uid="uid://ns3birboomk8" path="res://Icons/Control Icons/PlayIcon.png" id="7_fm5yq"]
-[ext_resource type="Texture2D" uid="uid://bl3b4dd2wggmx" path="res://Icons/Control Icons/LoopIcon.png" id="7_iw7lk"]
-[ext_resource type="Texture2D" uid="uid://m0lit6kg4ncm" path="res://Icons/Control Icons/LoopOneIcon.png" id="8_epx4s"]
-[ext_resource type="Script" uid="uid://c4a5cpic4xdkm" path="res://Scripts/ScrollbarSpacer.cs" id="8_hcmg4"]
+[ext_resource type="Script" uid="uid://ch03acnkpid07" path="res://Scripts/ScrollbarSpacer.cs" id="8_hcmg4"]
 [ext_resource type="PackedScene" uid="uid://cn7tbtfias7p5" path="res://Scenes/CustomSlider.tscn" id="8_kuu8f"]
 [ext_resource type="PackedScene" uid="uid://buanl7rmqe63m" path="res://Scenes/PlaylistButton.tscn" id="9_7767v"]
 [ext_resource type="PackedScene" uid="uid://bsr1jt1kglctp" path="res://Scenes/AlbumButton.tscn" id="10_70nue"]
@@ -122,8 +120,6 @@ PlaylistButtonScene = ExtResource("9_7767v")
 SongButtonScene = ExtResource("7_7rhl2")
 PauseButtonIcon = ExtResource("5_h0qsu")
 PlayButtonIcon = ExtResource("7_fm5yq")
-LoopButtonIcon = ExtResource("7_iw7lk")
-LoopOnceButtonIcon = ExtResource("8_epx4s")
 
 [node name="FlatBackground" type="ColorRect" parent="."]
 unique_name_in_owner = true

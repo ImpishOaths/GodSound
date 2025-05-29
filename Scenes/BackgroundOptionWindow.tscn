@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://brw2rnv3gcadh"]
 
-[ext_resource type="Script" uid="uid://in8wkd8cwd34" path="res://Scripts/BackgroundOptionWindow.cs" id="1_kb352"]
+[ext_resource type="Script" uid="uid://bepl265q0we37" path="res://Scripts/BackgroundOptionWindow.cs" id="1_kb352"]
 
 [node name="BackgroundOptionWindow" type="Window"]
 title = "Background Options"

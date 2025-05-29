@@ -1,10 +1,10 @@
 [gd_scene load_steps=2 format=3 uid="uid://cldlxder467b6"]
 
-[ext_resource type="Script" uid="uid://c4mcoen5erql3" path="res://Scripts/AddPlaylistWindow.cs" id="1_6n5m2"]
+[ext_resource type="Script" uid="uid://bqp01oidmoioo" path="res://Scripts/AddPlaylistWindow.cs" id="1_6n5m2"]
 
 [node name="AddPlaylistWindow" type="Window"]
-initial_position = 2
 title = "Add Playlist"
+initial_position = 2
 size = Vector2i(420, 100)
 wrap_controls = true
 transient = true

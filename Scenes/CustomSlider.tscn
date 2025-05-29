@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=3 uid="uid://cn7tbtfias7p5"]
 
 [ext_resource type="Texture2D" uid="uid://b20xsfxpmmbab" path="res://Icons/grabber.png" id="1_njeh1"]
-[ext_resource type="Script" uid="uid://cwt8qph0js54w" path="res://Scripts/CustomSlider.cs" id="1_w36we"]
-[ext_resource type="Shader" uid="uid://c4dbpny670te3" path="res://UI/RoundedTexture.gdshader" id="2_55qtw"]
+[ext_resource type="Script" uid="uid://v8vhhwnr68kc" path="res://Scripts/CustomSlider.cs" id="1_w36we"]
+[ext_resource type="Shader" uid="uid://8feak2nsfolj" path="res://UI/RoundedTexture.gdshader" id="2_55qtw"]
 [ext_resource type="Material" uid="uid://fw7ojim66e12" path="res://UI/RoundedTextureLeft.tres" id="2_vpgs7"]
 [ext_resource type="Material" uid="uid://dt0xa57k2vlrj" path="res://UI/RoundedTextureRight.tres" id="4_xk1tr"]
 
