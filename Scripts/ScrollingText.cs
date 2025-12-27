@@ -4,7 +4,7 @@ using System;
 public partial class ScrollingText : Control
 {
 	[Export]
-	private string text;
+	public string text {get; private set;}
 	[Export]
 	private double scrollSpeed;
 	[Export]

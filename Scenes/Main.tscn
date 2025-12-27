@@ -123,6 +123,7 @@ PlayButtonIcon = ExtResource("7_fm5yq")
 
 [node name="FlatBackground" type="ColorRect" parent="."]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -133,6 +134,7 @@ color = Color(0.2, 0.298039, 0.501961, 1)
 
 [node name="RainbowBackground" type="ColorRect" parent="."]
 unique_name_in_owner = true
+visible = false
 material = ExtResource("2_7wpbd")
 layout_mode = 1
 anchors_preset = 15
@@ -226,6 +228,7 @@ custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
 [node name="VolumeSlider" parent="Margins/HSplit/Player/PlayControl/VSplit/Controls" instance=ExtResource("8_kuu8f")]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.3
@@ -411,6 +414,11 @@ layout_mode = 2
 size_flags_horizontal = 3
 vertical = true
 
+[node name="SearchBar" type="LineEdit" parent="Margins/HSplit/Playlists/MarginContainer/ScrollContainer/HSplit/VSplit"]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "Search"
+
 [node name="PlaylistsLabel" type="Label" parent="Margins/HSplit/Playlists/MarginContainer/ScrollContainer/HSplit/VSplit"]
 layout_mode = 2
 text = "Playlists"
@@ -490,3 +498,5 @@ visible = false
 [connection signal="button_up" from="Margins/HSplit/Player/PlayControl/VSplit/SeekBar/TimeSlider" to="." method="SeekTime"]
 [connection signal="pressed" from="Margins/HSplit/Player/Songs/MarginContainer/VSplit/HSplit/PlayAlbumButton" to="." method="PlayAlbum"]
 [connection signal="pressed" from="Margins/HSplit/Player/Songs/MarginContainer/VSplit/HSplit/SetBookmark" to="." method="ResetBookmark"]
+[connection signal="editing_toggled" from="Margins/HSplit/Playlists/MarginContainer/ScrollContainer/HSplit/VSplit/SearchBar" to="." method="SearchToggle"]
+[connection signal="text_changed" from="Margins/HSplit/Playlists/MarginContainer/ScrollContainer/HSplit/VSplit/SearchBar" to="." method="SearchChanged" unbinds=1]

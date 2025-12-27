@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://bepl265q0we37" path="res://Scripts/BackgroundOptionWindow.cs" id="1_kb352"]
 
 [node name="BackgroundOptionWindow" type="Window"]
+oversampling_override = 1.0
 title = "Background Options"
 initial_position = 2
 size = Vector2i(390, 146)
@@ -40,13 +41,11 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 selected = 0
-item_count = 3
+item_count = 2
 popup/item_0/text = "Rainbow"
 popup/item_0/id = 0
 popup/item_1/text = "Flat"
 popup/item_1/id = 1
-popup/item_2/text = "Clear"
-popup/item_2/id = 2
 
 [node name="Color" type="HBoxContainer" parent="Margin/VBox"]
 layout_mode = 2

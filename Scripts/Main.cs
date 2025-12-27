@@ -48,11 +48,13 @@ public partial class Main : Control
 	private CycleButton PlaybackSpeed;
 	private Control SetBookmark;
 	private ScrollingText BookmarkLabel;
+	private CustomSlider VolumeSlider;
+	private LineEdit SearchBar;
 
 	private AwakeControl AwakeControl;
-	public Settings ProgramSettings = new Settings();
+	public Settings ProgramSettings = new();
 
-	private Queue<AddFolderArguments> AddFolderQueue = new Queue<AddFolderArguments>();
+	private readonly Queue<AddFolderArguments> AddFolderQueue = new();
 	public readonly Dictionary<string, LibraryObject> Library = [];
 	public SortedSet<string> LoadAlbumQueue = [];
 	public List<string> BufferSavePlaylist = [];
@@ -72,14 +74,14 @@ public partial class Main : Control
 	public Playlist SelectedPlaylist {get; private set;}
 
 	public enum PlaybackMode {STOP, LOOP, LOOP1, SHUFFLE}
-	public float[] SpeedOptions = {0.5f, 1.0f, 2.0f, 3.0f};
+	public float[] SpeedOptions = [0.5f, 1.0f, 2.0f, 3.0f];
 	public PlaybackMode CurrentMode = PlaybackMode.STOP;
-	public Queue<int> ShuffleList = new Queue<int>();
+	public Queue<int> ShuffleList = new();
 	public Random random;
 
 	public (Playlist, int, bool)? DefferedSongUpdate = null;
 
-	private JsonSerializerSettings SerializerSettings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects };
+	private readonly JsonSerializerSettings SerializerSettings = new() { TypeNameHandling = TypeNameHandling.Objects };
 
 	private SimpleGlobalHook hook;
 	private bool scheduleTogglePlay = false;
@@ -105,6 +107,8 @@ public partial class Main : Control
 		PlaybackSpeed = GetNode<CycleButton>("%PlaybackSpeedOptions");
 		SetBookmark = GetNode<Control>("%SetBookmark");
 		BookmarkLabel = GetNode<ScrollingText>("%BookmarkLabel");
+		VolumeSlider = GetNode<CustomSlider>("%VolumeSlider");
+		SearchBar = GetNode<LineEdit>("%SearchBar");
 		WavePlayer = new WaveOutEvent();
 		random = new Random();
 		SetVolume(1);
@@ -371,6 +375,7 @@ public partial class Main : Control
 		{
 			WavePlayer.Volume = value * value;
 		}
+		ProgramSettings.volume = value;
 	}
 
 	public void TogglePlay()
@@ -421,12 +426,13 @@ public partial class Main : Control
 				UpdateBookmarkVisual();
 				break;
 		}
+		if(SearchBar.Text.Length > 1)
+			SearchChanged();
 	}
 
 	public void SetSpeedPlayback(int index)
 	{
-		if(SpeedControl != null)
-			SpeedControl.SetSpeed(SpeedOptions[index]);
+		SpeedControl?.SetSpeed(SpeedOptions[index]);
 	}
 
 	public void ShowAudiobookMode()
@@ -625,6 +631,8 @@ public partial class Main : Control
 		AwakeControl.AlwaysAwake = !ProgramSettings.hideUI;
 		FlatBackground.Color = ProgramSettings.flatColor;
 		SetPlaybackMode((int)ProgramSettings.playbackMode);
+		SetVolume(ProgramSettings.volume);
+		VolumeSlider.SetScrollValue(ProgramSettings.volume);
 	}
 
 	public void PickDefaultPlaylist()
@@ -795,6 +803,61 @@ public partial class Main : Control
 	{
 		return JsonConvert.DeserializeObject<Bookmark>(File.ReadAllText(filePath));
 	}
+
+	public void ClearSearch()
+	{
+		foreach(var button in Library.Select((pair)=>pair.Value.Button))
+			button.Visible = true;
+		foreach(var song in SongList.GetChildren().Cast<SongButton>())
+			song.Visible = true;
+	}
+
+	public void Search(string search)
+	{
+		string name;
+		foreach(var libObj in Library.Values)
+		{
+			bool visible = false;
+			name = libObj.Playlist.playlistName.ToLower();
+			if(name.Contains(search))
+				visible = true;
+			foreach(var song in libObj.Playlist.songs)
+			{
+				name = song.songName.ToLower();
+				if(name.Contains(search))
+				{
+					visible = true;
+					break;
+				}
+			}
+			libObj.Button.Visible = visible;
+		}
+		foreach(var song in SongList.GetChildren().Cast<SongButton>())
+		{
+			name = song.songName.text.ToLower();
+			song.Visible = name.Contains(search);
+		}
+	}
+
+	public void SearchToggle(bool toggle)
+	{
+		if(toggle == false)
+		{
+			ClearSearch();
+			SearchBar.Clear();
+		}
+	}
+
+	public void SearchChanged()
+	{
+		string text = SearchBar.Text;
+		if(text.Length < 2)
+		{
+			ClearSearch();
+			return;
+		}
+		Search(text.ToLower());
+	}
 }
 
 public class Settings
@@ -806,6 +869,7 @@ public class Settings
 	public string playlist = "";
 	public int song = -1;
 	public Main.PlaybackMode playbackMode = Main.PlaybackMode.STOP;
+	public float volume = 1.0f;
 }
 
 public class LibraryObject
